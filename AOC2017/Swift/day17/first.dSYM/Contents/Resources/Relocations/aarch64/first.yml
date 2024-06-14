@@ -1,0 +1,17 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     first
+relocations:
+  - { offset: 0x86286, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x1000036F4, symSize: 0xB8 }
+  - { offset: 0x8629A, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x1000036F4, symSize: 0xB8 }
+  - { offset: 0x862B8, size: 0x8, addend: 0x0, symName: '_$s5first5solveyS2iF', symObjAddr: 0xB8, symBinAddr: 0x1000037AC, symSize: 0x3C4 }
+  - { offset: 0x86378, size: 0x8, addend: 0x0, symName: ___swift_instantiateConcreteTypeFromMangledName, symObjAddr: 0x514, symBinAddr: 0x100003C08, symSize: 0x6C }
+  - { offset: 0x8638C, size: 0x8, addend: 0x0, symName: '_$sSNySiGSNyxGSlsSxRzSZ6StrideRpzrlWl', symObjAddr: 0x580, symBinAddr: 0x100003C74, symSize: 0x88 }
+  - { offset: 0x863A0, size: 0x8, addend: 0x0, symName: ___swift_instantiateConcreteTypeFromMangledNameAbstract, symObjAddr: 0x608, symBinAddr: 0x100003CFC, symSize: 0x74 }
+  - { offset: 0x863B4, size: 0x8, addend: 0x0, symName: '_$sS2iSZsWl', symObjAddr: 0x67C, symBinAddr: 0x100003D70, symSize: 0x68 }
+  - { offset: 0x863C8, size: 0x8, addend: 0x0, symName: '_$sSaySiGWOh', symObjAddr: 0x6E4, symBinAddr: 0x100003DD8, symSize: 0x28 }
+  - { offset: 0x863FE, size: 0x8, addend: 0x0, symName: '_$ss27_finalizeUninitializedArrayySayxGABnlF', symObjAddr: 0x47C, symBinAddr: 0x100003B70, symSize: 0x40 }
+  - { offset: 0x86428, size: 0x8, addend: 0x0, symName: '_$ss5print_9separator10terminatoryypd_S2StFfA0_', symObjAddr: 0x4BC, symBinAddr: 0x100003BB0, symSize: 0x2C }
+  - { offset: 0x86444, size: 0x8, addend: 0x0, symName: '_$ss5print_9separator10terminatoryypd_S2StFfA1_', symObjAddr: 0x4E8, symBinAddr: 0x100003BDC, symSize: 0x2C }
+  - { offset: 0x864A3, size: 0x8, addend: 0x0, symName: '_$sSa12_endMutationyyF', symObjAddr: 0x70C, symBinAddr: 0x100003E00, symSize: 0xC }
+...
