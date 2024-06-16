@@ -1,0 +1,86 @@
+import Foundation
+
+func regOrImm(_ str: String, _ vals: [String: Int]) -> Int {
+    if let intValue = Int(str) {
+        return intValue
+    } else if let val = vals[str] {
+        return val
+    } else {
+        return 0
+    }
+}
+
+func solve(_ ops: [String]) -> Int
+{
+    var res = 0
+
+    var val0: [String: Int] = [:] // "X":2
+    var val1: [String: Int] = [:]
+    var i = 0
+
+    var sendQ1: [Int] = []
+    var sendQ2: [Int] = []
+
+    while i<ops.count {
+
+        let split = ops[i].split(separator: " ").map{String($0)}
+
+        switch split[0] {
+            case "snd":
+                sendQ1 += [regOrImm(split[1], val0)]
+                sendQ2 += [regOrImm(split[1], val1)]
+                res+=1
+                print(res)
+            case "set":
+                val0[split[1]] = regOrImm(split[2], val0)
+                val1[split[1]] = regOrImm(split[2], val1)
+            case "add":
+                val0[split[1], default:0] += regOrImm(split[2], val0)
+                val1[split[1], default:0] += regOrImm(split[2], val1)
+            case "mul":
+                val0[split[1], default:0] *= regOrImm(split[2], val0)
+                val1[split[1], default:0] *= regOrImm(split[2], val1)
+            case "mod":
+                val0[split[1]]! %= regOrImm(split[2], val0)
+                val1[split[1]]! %= regOrImm(split[2], val1)
+            case "rcv":
+                if sendQ1.count == 0 { break }
+                val0[split[1]]! = sendQ2[0]
+                val1[split[1]]! = sendQ1[0]
+                
+                sendQ1 = Array(sendQ1[1...])
+                sendQ2 = Array(sendQ2[1...])
+            case "jgz":
+                if let val = val0[split[1]], val > 0 {
+                    let jumpValue = regOrImm(split[2], val0) // Assuming val0 and val1 should be treated the same for jump values
+                    if jumpValue > 0 {
+                        i += jumpValue
+                    } else {
+                        i += 1 // Ensure we always move forward
+                    }
+                } else if let val = val1[split[1]], val > 0 {
+                    let jumpValue = regOrImm(split[2], val1) // Assuming val0 and val1 should be treated the same for jump values
+                    if jumpValue > 0 {
+                        i += jumpValue
+                    } else {
+                        i += 1 // Ensure we always move forward
+                    }
+                } else {
+                    i += 1
+                }
+
+                continue 
+            default:
+                break
+        }
+
+
+        i+=1
+    }
+
+    return res
+}
+
+let inputFileURL = URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("input.txt")
+let content = try String(contentsOf: inputFileURL, encoding: .utf8)
+print(solve(content.split(separator: "\n").map{String($0)}))
