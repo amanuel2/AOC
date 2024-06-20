@@ -2,8 +2,7 @@ import Foundation
 
 typealias MD = [[String]]
 
-struct Matrix
-{
+struct Matrix {
     var mat: MD
 
     init(_ mat: MD) { self.mat = mat }
@@ -47,17 +46,8 @@ struct Matrix
         return res
     }
 
-    // static func ==(lhs: Matrix, rhs: MD) -> MD?
-    // {
-    //     if lhs.mat == rhs { return rhs }
-    //     // if lhs.flip() == rhs { return rhs }
-    //     if lhs.rotate() == rhs { return rhs }
-    //     if Matrix(lhs.rotate()).rotate() == rhs { return rhs }
-    //     if Matrix(Matrix(lhs.rotate()).rotate()).rotate() == rhs { return rhs }
-    //     return nil
-    // }
-
-    static func ==(lhs: Matrix, rhs: MD) -> MD? {
+    static func ==(lhs: Matrix, rhs: MD) -> Bool {
+        if lhs.mat == rhs { return true }
         let transformations = [
             lhs.mat,
             lhs.rotate(),
@@ -70,16 +60,14 @@ struct Matrix
         ]
 
         for transformed in transformations {
-            if transformed == rhs { return rhs }
+            if transformed == rhs { return true }
         }
 
-        return nil
+        return false
     }
-    
 
-    func count() -> Int
-    {
-        // don't have updated compiler for .count(where: ), fudge
+    func count() -> Int {
+        // new swift compiler just use .count {
         var res = 0
         for i in 0..<mat.count {
             for j in 0..<mat[0].count {
@@ -89,91 +77,51 @@ struct Matrix
         return res
     }
 
-    mutating func dim()
-    {
-        if mat.count == 2 || mat.count == 3 { return }
-        var sep = -1
+    mutating func enhance(with rules: [MD: MD]) {
+        let sep = (mat.count % 2 == 0) ? 2 : 3
+        let size = mat.count / sep
+        var newMat: MD = Array(repeating: Array(repeating: "", count: size * (sep + 1)), count: size * (sep + 1))
 
-        if (mat.count % 2) == 0  { sep = 2 }
-        else if (mat.count % 3) == 0 { sep = 3 }
-        else { fatalError("Non 2/3 divisbile mat") }
-
-
-        var res: MD = MD()
-        // TODO: for some reason going after 4 here, and gives AOB
-        for i in stride(from: 0, through: mat.count, by: sep) {
-            for j in stride(from: 0, through: mat.count, by: sep) {
+        for i in 0..<size {
+            for j in 0..<size {
                 var submatrix: MD = []
-                for k in i..<i+sep {
-                    submatrix.append(Array(mat[k][j..<j+sep]))
+                for k in 0..<sep {
+                    submatrix.append(Array(mat[i * sep + k][j * sep..<(j * sep + sep)]))
                 }
-                res.append(contentsOf: submatrix)
+
+                var transformed: MD = []
+                for (key, val) in rules {
+                    if Matrix(submatrix) == key {
+                        transformed = val
+                        break
+                    }
+                }
+
+                for k in 0..<transformed.count {
+                    for l in 0..<transformed[0].count {
+                        newMat[i * (sep + 1) + k][j * (sep + 1) + l] = transformed[k][l]
+                    }
+                }
             }
         }
-
-        // it has appended in columns first then finish then next row
-        // this might not be correct
-        self.mat = res
+        self.mat = newMat
     }
 }
 
-
-// flip = two rotates
-
-// func solve(_ rules: [MD: MD]) -> Int
-// {
-//     var mat: Matrix = Matrix([[".", "#", "."], [".", ".", "#"], ["#", "#", "#"]])
-
-//     var changed = false
-//     var i = 0
-
-//     repeat {
-//         for rule in rules {
-//             let (key,val) = rule
-//             if let _ = mat == key {
-//                 mat = Matrix(val)
-//                 changed = true
-//                 break
-//             } else if let _ = Matrix(mat.flip()) == key {
-//                 mat = Matrix(val)
-//                 changed = true
-//                 break
-//             }
-//         }
-//         i+=1
-//     } while(changed && i<5)
-
-//     return mat.count()
-// }
-
-func solve(_ rules: [MD: MD]) -> Int {
+func solve(_ rules: [MD: MD], _ iter: Int) -> Int {
     var mat: Matrix = Matrix([[".", "#", "."], [".", ".", "#"], ["#", "#", "#"]])
-    var changed = false
-    var i = 0
 
-    repeat {
-        changed = false
-        mat.dim()
-        for rule in rules {
-            let (key, val) = rule
-            if let _ = mat == key {
-                mat = Matrix(val)
-                changed = true
-                break
-            }
-        }
-        i += 1
-    } while changed && i < 2
+    for _ in 0..<iter {
+        mat.enhance(with: rules)
+    }
 
     return mat.count()
 }
 
-
-// let inputFileURL = URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("input.txt")
-// let content = try String(contentsOf: inputFileURL, encoding: .utf8)
-
-// let lines = content.split(separator: "\n").map {String($0)} // .split(separator: " => ")
-let lines = ["../.# => ##./#../...", ".#./..#/### => #..#/..../..../#..#"]
+// Test cases
+let inputFileURL = URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("input.txt")
+let content = try String(contentsOf: inputFileURL, encoding: .utf8)
+let lines = content.split(separator: "\n").map {String($0)}
 
 var mp: [MD:MD] = [MD:MD]()
 for line in lines {
@@ -181,4 +129,4 @@ for line in lines {
     mp[Matrix.convert(spl[0])] = Matrix.convert(spl[1])
 }
 
-print(solve(mp))
+print(solve(mp, 5))

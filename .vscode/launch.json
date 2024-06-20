@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/AOC2017/Swift/day20/first",
+            "program": "${workspaceFolder}/AOC2017/Swift/day22/first",
             "args": [],
             "cwd": "${workspaceFolder}"
         }
